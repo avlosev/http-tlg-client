@@ -1,12 +1,14 @@
 const http = require('http');
 const { Client } = require('telegram-client');
-// const Client = require('./http-telegram-client')
+const fs = require('fs');
 
-const port = process.env.PORT || 8080;
+const configure = JSON.parse(fs.readFileSync('config.json'));
+
+const port = process.env.PORT || configure.lissenPort || 8080;
 
 const client = new Client({
-  apiId: 1138536, 
-  apiHash: '2067da1a700dfc6685c4d0c464117db4'
+  apiId: configure.apiId, 
+  apiHash: configure.apiHash
 });
 
 const server = http.createServer(async (req, res) => {
@@ -190,7 +192,7 @@ const server = http.createServer(async (req, res) => {
 
 const connect = async () => {
   console.log(`Start...`);
-  await client.connect('Aleksey Losev', '+79127591157');
+  await client.connect(configure.name, configure.phoneNumber);
   console.log(`server is listening on ${port}`);
   server.listen(port);
 }
