@@ -10,6 +10,8 @@ const client = new Client({
 });
 
 const server = http.createServer(async (req, res) => {
+  // console.log(req.method);
+  // console.log(req.url);
   if (req.method === 'POST') {
     let options = {};
     switch (req.url) {
@@ -129,9 +131,32 @@ const server = http.createServer(async (req, res) => {
           }
         });
         break;
+      case '/getSupergroupFullInfo':
+        req.on('data', (data) => {
+          options = JSON.parse(data);
+        });
+        req.on('end',async () => {
+          if(!options.supergroup_id) {
+            res.statusCode = 400;
+            res.end('Bad POST getSupergroupFullInfo! Need supergroup_id field.');
+          } else {
+            await client.request('getSupergroupFullInfo', {supergroup_id: options.supergroup_id})
+            .then(result=>{
+              res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+              res.end(JSON.stringify(result))
+            })
+            .catch(error=>{
+              console.log(error);
+              res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
+              res.end(JSON.stringify(error));
+            });
+          }
+        });
+        break;
       default:
         res.statusCode = 400;
-        res.end('Unknow POST method!');
+        console.log(req.url);
+        res.end(`Unknow POST method: ${req.url}`);
         break;
     }
   } else if(req.method === 'GET') {
