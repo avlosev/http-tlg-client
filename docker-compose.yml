@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+  nodejs:
+    image: node
+    container_name: nodejs
+    volumes:
+      - ./src:/app
+    ports:
+      - "8080:8080"
+# Необходимо для первого запуска, после запуска заходим в контейнер docker exec -it nodejs bash
+#    tty: true
+# Закомментировать перед первым запуском
+    working_dir: /app
+    command: "node ."
+    restart: always
