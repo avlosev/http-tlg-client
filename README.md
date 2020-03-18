@@ -1,11 +1,11 @@
 # http-tlg-client
 
-#git clone https://github.com/avlosev/http-tlg-client.git
+1. git clone https://github.com/avlosev/http-tlg-client.git
 
-#cd http-tlg-client
+2. cd http-tlg-client
 
-#npm install
+3. npm install
 
-#node .
+4. node .
 
 # После запуска нателефон в котором устновлен telegram придет авторизационный код, который необходимо ввести. В последующем запуск будет производиться без запроса авторизации.
