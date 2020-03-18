@@ -1,0 +1,7 @@
+{
+  "lissenPort": 8080,
+  "apiId": "YOUR_API_ID",
+  "apiHash": "YOUR_API_HASH",
+  "name": "YOUR_NAME",
+  "phoneNumber": "YOUR_PHONE_NUMBER"
+}
