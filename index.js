@@ -1,6 +1,7 @@
 const http = require('http');
 const { Client } = require('telegram-client');
 const fs = require('fs');
+const url = require('url');
 
 const configure = JSON.parse(fs.readFileSync('config.json'));
 
@@ -162,7 +163,29 @@ const server = http.createServer(async (req, res) => {
         break;
     }
   } else if(req.method === 'GET') {
-    switch (req.url) {
+    let query = url.parse(req.url,true).query;
+    let pathname = url.parse(req.url,true).pathname;
+    switch (pathname) {
+      case '/getSupergroup':
+        if(!query.supergroup_id) {
+          res.statusCode = 400;
+          res.end('Bad GET getSupergroup! Need supergroup_id query parameter.');
+        } else {
+          await client.request('getSupergroupMembers', {
+            supergroup_id: query.supergroup_id,
+            limit: 200
+          })
+          .then(result=>{
+            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(result))
+          })
+          .catch(error=>{
+            console.log(error);
+            res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(error));
+          });
+        }
+        break;
       case '/getChats':
         await client.request('getChats', {
           offset_order: '9223372036854775807',
@@ -178,6 +201,117 @@ const server = http.createServer(async (req, res) => {
           res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
           res.end(JSON.stringify(error));
         });
+        break;
+      case '/searchChatMembers':
+        if(!query.chat_id) {
+          res.statusCode = 400;
+          res.end('Bad GET searchChatMembers! Need chat_id query parameter.');
+        } else {
+          await client.request('searchChatMembers', {
+            chat_id: query.chat_id,
+            limit: 10000
+          })
+          .then(result=>{
+            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(result))
+          })
+          .catch(error=>{
+            console.log(error);
+            res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(error));
+          });
+        }
+        break;
+      case '/getUser':
+        if(!query.user_id) {
+          res.statusCode = 400;
+          res.end('Bad GET getUser! Need user_id query parameter.');
+        } else {
+          await client.request('getUser', {
+            user_id: query.user_id,
+            limit: 10000
+          })
+          .then(result=>{
+            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(result))
+          })
+          .catch(error=>{
+            console.log(error);
+            res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(error));
+          });
+        }
+        break;
+      case '/getSupergroupMembers':
+        if(!query.supergroup_id) {
+          res.statusCode = 400;
+          res.end('Bad GET getSupergroupMembers! Need supergroup_id query parameter.');
+        } else {
+          await client.request('getSupergroupMembers', {
+            supergroup_id: query.supergroup_id,
+            limit: 200
+          })
+          .then(result=>{
+            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(result))
+          })
+          .catch(error=>{
+            console.log(error);
+            res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(error));
+          });
+        }
+        break;
+      case '/getChat':
+        if(!query.chat_id) {
+          res.statusCode = 400;
+          res.end('Bad GET getChat! Need chat_id query parameter.');
+        } else {
+          await client.request('getChat', {chat_id: query.chat_id})
+          .then(result=>{
+            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(result))
+          })
+          .catch(error=>{
+            console.log(error);
+            res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(error));
+          });
+        }
+        break;
+      case '/getBasicGroupFullInfo':
+        if(!query.basic_group_id) {
+          res.statusCode = 400;
+          res.end('Bad GET getBasicGroupFullInfo! Need basic_group_id query parameter.');
+        } else {
+          await client.request('getBasicGroupFullInfo', {basic_group_id: query.basic_group_id})
+          .then(result=>{
+            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(result))
+          })
+          .catch(error=>{
+            console.log(error);
+            res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(error));
+          });
+        }
+        break;
+      case '/getSupergroupFullInfo':
+        if(!query.supergroup_id) {
+          res.statusCode = 400;
+          res.end('Bad GET getSupergroupFullInfo! Need supergroup_id query parameter.');
+        } else {
+          await client.request('getSupergroupFullInfo', {supergroup_id: query.supergroup_id})
+          .then(result=>{
+            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(result))
+          })
+          .catch(error=>{
+            console.log(error);
+            res.writeHead(400, {'Content-Type': 'application/json; charset=utf-8'});
+            res.end(JSON.stringify(error));
+          });
+        }
         break;
       default:
         res.statusCode = 400;
